@@ -1554,6 +1554,10 @@
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="printer/MonoPix.h" />
+		<Unit filename="printer/PrCmd.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="printer/PrCmd.h" />
 		<Unit filename="printer/PrConf.h" />
 		<Unit filename="printer/PrEmu.c">
 			<Option compilerVar="CC" />
@@ -1567,6 +1571,10 @@
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="printer/PrLvgl.h" />
+		<Unit filename="printer/PrPara.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="printer/PrPara.h" />
 		<Unit filename="printer/PrTest.c">
 			<Option compilerVar="CC" />
 		</Unit>

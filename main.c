@@ -55,7 +55,8 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR szCmdLi
 
     /*Run the lvgl printer*/
     //print_text();
-    print_image();
+    //print_image();
+    print_format();
 
     while(1) {
         /* Periodically call the lv_task handler.
