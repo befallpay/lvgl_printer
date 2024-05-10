@@ -1,8 +1,9 @@
 #include "lvgl.h"
 #include "PrConf.h"
 #include "PrInput.h"
-#include "PrLvgl.h"
 #include "PrWraper.h"
+#include "PrPara.h"
+#include "PrLvgl.h"
 
 
 typedef struct {
@@ -39,6 +40,7 @@ int Pr_SetFont(char *strName, int vSize, int vStyle)
 int Pr_Text(const char *strText)
 {
 	int vRet = 0;
+	CPrPara tPara;
 
 	lv_draw_label_dsc_t label_dsc;
 	lv_point_t txt_size = {0};
@@ -50,12 +52,16 @@ int Pr_Text(const char *strText)
 
 	lv_layer_t layer;
 
+	Pr_ReadPara(&tPara);
 	// 计算文本的点阵高度
 	lv_text_get_size(&txt_size, strText, s_tPrFont.font, 0, 0, PR_WIDTH_BITS, LV_TEXT_FLAG_NONE);
 	// to do...根据打印机设置配置文本区域
-	coords.x1 = 0;
+	coords.x1 = tPara.vTextLeft;
 	coords.y1 = 0;
-	coords.x2 = PR_WIDTH_BITS-1;
+	coords.x2 = tPara.vTextLeft+tPara.vTextRegion-1;
+	if(coords.x2 > PR_WIDTH_BITS-1){
+		coords.x2 = PR_WIDTH_BITS-1;
+	}
 	coords.y2 = txt_size.y-1;
 
 	vSize = LV_CANVAS_BUF_SIZE(PR_WIDTH_BITS, txt_size.y, 16, 4);
@@ -72,7 +78,12 @@ int Pr_Text(const char *strText)
     lv_draw_label_dsc_init(&label_dsc);
     label_dsc.text = strText;
 	label_dsc.font = s_tPrFont.font;
-	label_dsc.sel_bg_color = lv_color_white();
+	label_dsc.line_space = tPara.vLineSpace+tPara.vUnderline;
+	label_dsc.align = tPara.vJustification;
+	if(tPara.vUnderline != 0){
+		label_dsc.decor = LV_TEXT_DECOR_UNDERLINE;
+	}
+	//label_dsc.sel_bg_color = lv_color_white();
 
     lv_canvas_init_layer(canvas, &layer);
     lv_draw_label(&layer, &label_dsc, &coords);
@@ -94,9 +105,10 @@ LB_END:
 	return vRet;
 }
 
-int Pr_ImageAt(const char *strImgPath, int vX, int vY)
+int Pr_Image(const char *strImgPath)
 {
 	int vRet = 0;
+	CPrPara tPara;
 
 	lv_image_header_t header;
 	lv_area_t coords = {0};
@@ -109,16 +121,26 @@ int Pr_ImageAt(const char *strImgPath, int vX, int vY)
 	lv_layer_t layer;
 	lv_draw_image_dsc_t dsc;
 
-
+	Pr_ReadPara(&tPara);
+	// get image w and h
 	res = lv_image_decoder_get_info(strImgPath, &header);
 	if(res != LV_RESULT_OK){
 		vRet = -1;
 		goto LB_END;
 	}
-	coords.x1 = vX;
-	coords.y1 = vY;
-	coords.x2 = vX+header.w-1;
-	coords.y2 = vY+header.h-1;
+	// align
+	coords.x1 = 0;
+	coords.x2 = header.w-1;
+	coords.y1 = 0;
+	coords.y2 = header.h-1;
+	if(tPara.vJustification == PRSV_JUST_MID){
+		coords.x1 = (PR_WIDTH_BITS-header.w)>>1;
+		coords.x2 = coords.x1+header.w-1;
+	}
+	else if(tPara.vJustification == PRSV_JUST_RIGHT){
+		coords.x1 = (PR_WIDTH_BITS-header.w);
+		coords.x2 = PR_WIDTH_BITS-1;
+	}
 
 	vSize = LV_CANVAS_BUF_SIZE(PR_WIDTH_BITS, header.h, 16, 4);
 	szCanvas = malloc(vSize);

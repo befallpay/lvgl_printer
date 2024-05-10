@@ -28,7 +28,7 @@ int MP_SetPoint(CMonoPix *ptPix, int vX, int vY, int vValue);
 int MP_Read(CMonoPix *ptFromPix, CMonoPix *ptToPix, int vX, int vY);
 int MP_Write(CMonoPix *ptFromPix, CMonoPix *ptToPix, int vX, int vY);
 // À©Õ¹½Ó¿Ú
-int MP_WriteDouble(CMonoPix *ptFromPix, CMonoPix *ptToPix, int vX, int vY, int vDblW, int vDblH);
+int MP_Double(CMonoPix *ptFromPix, CMonoPix *ptToPix, int vX, int vY);
 int MP_ShiftRight(CMonoPix *ptPix, int vBitCnt);
 int MP_Reverse(CMonoPix *ptPix);
 int MP_Merge(CMonoPix *ptFromPix, CMonoPix *ptToPix);

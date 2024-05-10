@@ -4,6 +4,7 @@
 
 int print_text(void);
 int print_image(void);
+int print_format(void);
 
 
 #endif
